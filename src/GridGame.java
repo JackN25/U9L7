@@ -75,15 +75,17 @@ public class GridGame {
             System.out.print("Enter a direction: W, A, S, D (up, down, left, right): ");
             String input = scanner.nextLine();
             if (validMove(input)) {
-
+                movePlayer(input);
             } else if (!input.equalsIgnoreCase("w") && !input.equalsIgnoreCase("a") && !input.equalsIgnoreCase("s") || !input.equalsIgnoreCase("d")){
                 System.out.println("Invalid Move!");
             } else {
                 System.out.println("Out Of Bounds!");
             }
         }
-
-
+        printBoard();
+        System.out.println("You have reached the Goal!");
+        System.out.println("Your score: " + player.getScore());
+        System.out.println("You moved: " + player.getMoves() + " times");
     }
 
     private boolean validMove(String moveMade) {
@@ -107,6 +109,72 @@ public class GridGame {
             return true;
         } else {
             return false;
+        }
+    }
+
+    private void movePlayer(String direction) {
+        int playerX = 0;
+        int playerY = 0;
+        for (int row = 0; row < 8; row++) {
+            for (int column = 0; column < 8; column++) {
+                if (board[row][column].getSymbol().equals(player.getSymbol())) {
+                    playerX = column;
+                    playerY = row;
+                }
+            }
+        }
+        player.move();
+        //move top and not treasure
+        if (direction.equalsIgnoreCase("w") && !board[playerY-1][playerX].getSymbol().equalsIgnoreCase("#")) {
+            board[playerY][playerX] = new Space("_");
+            board[playerY-1][playerX] = new Space(player.getSymbol());
+        }
+        //move top is treasure
+        else if (direction.equalsIgnoreCase("w") && board[playerY-1][playerX].getSymbol().equalsIgnoreCase("#")) {
+            board[playerY][playerX] = new Space("_");
+            Treasure treasure = (Treasure) board[playerY-1][playerX];
+            System.out.println(treasure.getPointValue());
+            player.addPoints(treasure.getPointValue());
+            board[playerY-1][playerX] = new Space(player.getSymbol());
+        }
+        //move left no treasure
+        else if (direction.equalsIgnoreCase("a") && !board[playerY][playerX-1].getSymbol().equalsIgnoreCase("#")) {
+            board[playerY][playerX] = new Space("_");
+            board[playerY][playerX-1] = new Space(player.getSymbol());
+        }
+        //move left is treasure
+        else if (direction.equalsIgnoreCase("a") && board[playerY][playerX-1].getSymbol().equalsIgnoreCase("#")) {
+            board[playerY][playerX] = new Space("_");
+            Treasure treasure = (Treasure) board[playerY][playerX-1];
+            System.out.println(treasure.getPointValue());
+            player.addPoints(treasure.getPointValue());
+            board[playerY][playerX-1] = new Space(player.getSymbol());
+        }
+        //move down no treasure
+        else if (direction.equalsIgnoreCase("s") && !board[playerY+1][playerX].getSymbol().equalsIgnoreCase("#")) {
+            board[playerY][playerX] = new Space("_");
+            board[playerY+1][playerX] = new Space(player.getSymbol());
+        }
+        //move down is treasure
+        else if (direction.equalsIgnoreCase("s") && board[playerY+1][playerX].getSymbol().equalsIgnoreCase("#")) {
+            board[playerY][playerX] = new Space("_");
+            Treasure treasure = (Treasure) board[playerY+1][playerX];
+            System.out.println(treasure.getPointValue());
+            player.addPoints(treasure.getPointValue());
+            board[playerY+1][playerX] = new Space(player.getSymbol());
+        }
+        //move right no treasure
+        else if (direction.equalsIgnoreCase("d") && !board[playerY][playerX+1].getSymbol().equalsIgnoreCase("#")) {
+            board[playerY][playerX] = new Space("_");
+            board[playerY][playerX+1] = new Space(player.getSymbol());
+        }
+        //move right is treasure
+        else if (direction.equalsIgnoreCase("d") && board[playerY][playerX + 1].getSymbol().equalsIgnoreCase("#")) {
+            board[playerY][playerX] = new Space("_");
+            Treasure treasure = (Treasure) board[playerY][playerX+1];
+            System.out.println(treasure.getPointValue());
+            player.addPoints(treasure.getPointValue());
+            board[playerY][playerX+1] = new Space(player.getSymbol());
         }
     }
 }
